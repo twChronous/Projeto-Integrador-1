@@ -118,9 +118,6 @@
     // Log de recebimento
     Serial.println("Dados recebidos:");
     Serial.printf("MAC: %s\n", macStr);
-    Serial.printf("AccX: %.2f\n", dadosRecebidos.acelerometro.accX);
-    Serial.printf("Altitude: %.2f\n", dadosRecebidos.altimetro.altitude);
-    Serial.printf("Timestamp: %.2f\n", dadosRecebidos.timestamp);
     Serial.println("-----------");
     }
     
@@ -158,7 +155,7 @@
         ",\"pitch\":" + String(dadosRecebidos.acelerometro.pitch, 2) + 
       "}" 
       ",\"timestamp\":" + String(dadosRecebidos.timestamp) + 
-    "}";
+    "}}";
   
     server.send(200, "application/json", jsonResponse);
   }

@@ -1,128 +1,204 @@
 # 🚀 Telemetria para Foguete d'Água - Projeto Integrador 1
 
-## 📌 Visão Geral do Projeto
+## 📌 Visão Geral
 
-Este repositório contém o sistema de telemetria desenvolvido para um foguete d'água como parte do Projeto Integrador 1 da faculdade. O objetivo principal é criar um sistema de monitoramento em tempo real para coletar e transmitir dados durante o voo do foguete.
+Este repositório contém o sistema de telemetria desenvolvido para um foguete d'água como parte do Projeto Integrador 1 da faculdade. O objetivo principal é criar um sistema robusto de monitoramento em tempo real para coletar, transmitir e registrar dados durante o voo do foguete.
 
-## 🎯 Objetivos do Projeto
+---
 
-- Desenvolver um sistema de telemetria robusto e preciso
-- Coletar dados de:
-  - Altitude
-  - Aceleração
-  - Orientação
-  - Temperatura
-- Transmitir dados em tempo real
-- Registrar informações para análise pós-voo
+## 🎯 Objetivos
 
-## 🛰️ Componentes do Sistema de Telemetria
+* Desenvolver um sistema de telemetria confiável e preciso
+* Coletar dados de:
+  * Altitude
+  * Aceleração
+  * Orientação (pitch e roll)
+  * Temperatura
+* Transmitir os dados em tempo real via comunicação sem fio
+* Registrar as informações para análise pós-voo
 
-### Hardware
-- Microcontrolador: ESP32
-- Sensores:
-  - Acelerômetro/Giroscópio
-  - Altímetro
-  - Sensor de Temperatura
-- Comunicação: ESP-NOW / WiFi
+---
 
-### Software
-- Firmware em C++
-- Protocolo de comunicação sem fio
-- Sistema de registro de dados
-- Interface de visualização de dados
+## 🛰️ Componentes do Sistema
 
-## 📂 Estrutura do Repositório
+### 🧩 Hardware
+
+* **Microcontrolador:** ESP32
+* **Sensores:**
+
+  * MPU6050 (Acelerômetro/Giroscópio)
+  * BMP280 (Altímetro e Temperatura)
+* **Comunicação:** ESP-NOW / Wi-Fi
+
+### 💾 Software
+
+* Firmware em **C++** com **PlatformIO** e **framework Arduino**
+* Módulo de comunicação sem fio
+* Sistema de registro em cartão SD
+* Interface Web para visualização dos dados
+
+---
+
+## 📁 Estrutura do Projeto
 
 ```
 projeto-foguete-telemetria/
 │
 ├── include/               # Arquivos de cabeçalho
-│   ├── SensorStructs.h    # Estruturas de dados dos sensores
-│   └── Config.h           # Configurações do sistema
+│   ├── SensorStructs.h    # Estruturas dos dados dos sensores
+│   └── Config.h           # Definições e parâmetros do sistema
 │
 ├── src/                   # Código-fonte
 │   ├── main.cpp           # Lógica principal
-│   ├── sensors.cpp        # Implementação dos sensores
-│   └── communication.cpp  # Módulo de comunicação
+│   ├── sensors.cpp        # Leitura e processamento dos sensores
+│   └── communication.cpp  # Envio e recepção de dados via ESP-NOW
 │
-├── docs/                  # Documentação do projeto
-│
-├── resources/             # Arquivos de imagem
-│
+├── docs/                  # Documentação adicional
+├── resources/             # Imagens, esquemas e recursos visuais
 ├── test/                  # Testes unitários e de integração
-│
 └── README.md              # Este arquivo
 ```
 
+---
+
 ## 🔧 Tecnologias Utilizadas
 
-- Linguagem: C++
-- Plataforma: PlatformIO / Arduino
-- Microcontrolador: ESP32
-- Comunicação: ESP-NOW, WiFi
-- Sensores: MPU6050, BMP280
+* **Linguagem:** C++
+* **Plataforma:** PlatformIO + Arduino
+* **Microcontrolador:** ESP32
+* **Comunicação:** ESP-NOW e Wi-Fi
+* **Sensores:** MPU6050, BMP280
 
-<div style="text-align: center;">
-    <img src="./resources/base.schematic.png" alt="Esquematico do projeto" width="600">
+---
+
+## 🚀 Funcionalidades
+
+### 📡 Coleta de Dados
+
+* Temperatura
+* Altitude em tempo real
+* Cálculo de roll e pitch
+* Aceleração nos eixos X, Y e Z
+* Giroscópio (gyroX, gyroY, gyroZ)
+
+
+---
+
+## 📊 Métricas de Precisão
+
+| Parâmetro            | Precisão     |
+| -------------------- | ------------ |
+| Altitude             | ±0.5 metros  |
+| Aceleração           | ±0.1 m/s²    |
+| Temperatura          | -10°C a 85°C |
+| Frequência de coleta | 10 Hz        |
+
+---
+
+## 🔬 Desafios Técnicos
+
+* Manter leitura estável em ambientes com vibração intensa
+* Confiabilidade da comunicação sem fio em campo aberto
+* Garantir sincronização e integridade dos dados dos sensores
+
+---
+
+## 🛠️ Instalação e Configuração
+
+### ⚙️ Requisitos
+
+* PlatformIO instalado (VSCode recomendado)
+* Placa ESP32
+* Bibliotecas:
+
+  * `Adafruit BMP280`
+  * `Wire`
+  * `Adafruit MPU6050` (ou similar)
+  * `ESP-NOW`
+
+### 📦 Passos
+
+1. Clone este repositório:
+
+   ```bash
+   git clone https://github.com/twChronous/Projeto-Integrador-1.git
+   ```
+2. Abra o projeto no **PlatformIO**
+3. Conecte seu ESP32 via USB
+4. Compile e envie o firmware com:
+
+   ```bash
+   pio run --target upload
+   ```
+
+---
+
+## 📡 Formato de Dados Transmitidos
+
+### Rota `/json`
+
+```json
+{
+  "sensors": {
+    "altimetro": {
+      "altitude": 0.00,
+      "pressure": 0
+    },
+    "acelerometro": {
+      "accX": 0.00,
+      "accY": 0.00,
+      "accZ": 0.00,
+      "gyroX": 0.00,
+      "gyroY": 0.00,
+      "gyroZ": 0.00,
+      "temp": 0.00,
+      "roll": 0.00,
+      "pitch": 0.00
+    },
+    "timestamp": 0
+  }
+}
+```
+
+### Rota `/` (Interface Web)
+
+Exibe uma página HTML com os dados recebidos formatados em uma tabela e atualizados automaticamente a cada 2 segundos.
+
+---
+
+## 🧪 Exemplo de Interface web
+
+<div align="center">
+    <img src="./resources/data.example.jpg" alt="Esquemático do projeto" width="600">
 </div>
 
-## 🚀 Funcionalidades Principais
+## 🧪 Esquema eletrico
 
-1. **Coleta de Dados**
-   - Altitude em tempo real
-   - Aceleração nos três eixos
-   - Orientação (pitch, roll)
-   - Temperatura
+<div align="center">
+    <img src="./resources/base.schematic.png" alt="Esquemático do projeto" width="600">
+</div>
 
-2. **Comunicação**
-   - Transmissão sem fio de telemetria
-   - Alcance de até 1 km
-   - Baixa latência
+---
 
-3. **Registro de Dados**
-   - Armazenamento em cartão SD
-   - Formato CSV para análise
-   - Carimbo de tempo preciso
+## 🤝 Contribuições
 
-## 📊 Métricas e Precisão
-
-- Precisão de altitude: ±0.5 metros
-- Taxa de amostragem: 10 Hz
-- Precisão de aceleração: ±0.1 m/s²
-- Intervalo de temperatura: -10°C a 85°C
-
-## 🔬 Desafios do Projeto
-
-- Resistência a altas vibrações
-- Comunicação em ambientes externos
-- Garantir precisão dos sensores
-
-## 🛠️ Configuração e Instalação
-
-### Pré-requisitos
-- PlatformIO
-- Biblioteca ESP32
-- Bibliotecas de sensores
-
-### Passos de Instalação
-1. Clone o repositório
-2. Abra no PlatformIO
-3. Instale dependências
-4. Compile e faça upload
-
-
-## 🤝 Contribuição
+Contribuições são bem-vindas! Para colaborar:
 
 1. Faça um fork do projeto
-2. Crie sua branch de feature
-3. Commit suas alterações
-4. Push para a branch
-5. Abra um Pull Request
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push na sua branch
+5. Crie um Pull Request
 
-## 📋 Documentação Adicional
+---
 
-- [Documentação do projeto](https://twchronous.github.io/Projeto-Integrador-1/md_readme.html)
+## 📚 Documentação
+
+* [Página da documentação](https://twchronous.github.io/Projeto-Integrador-1/md_readme.html)
+
+---
 
 ## 📄 Licença
 
-[GPL](./LICENSE)
+Distribuído sob a licença [CC0](./LICENSE).
+
