@@ -1,0 +1,132 @@
+\chapter{🚀 Telemetria para Foguete d\textquotesingle{}Água -\/ Projeto Integrador 1}
+\hypertarget{md_readme}{}\label{md_readme}\index{🚀 Telemetria para Foguete d\textquotesingle{}Água -\/ Projeto Integrador 1@{🚀 Telemetria para Foguete d\textquotesingle{}Água -\/ Projeto Integrador 1}}
+\label{md_readme_autotoc_md0}%
+\Hypertarget{md_readme_autotoc_md0}%
+\hypertarget{md_readme_autotoc_md1}{}\doxysection{\texorpdfstring{📌 Visão Geral do Projeto}{📌 Visão Geral do Projeto}}\label{md_readme_autotoc_md1}
+Este repositório contém o sistema de telemetria desenvolvido para um foguete d\textquotesingle{}água como parte do Projeto Integrador 1 da faculdade. O objetivo principal é criar um sistema de monitoramento em tempo real para coletar e transmitir dados durante o voo do foguete.\hypertarget{md_readme_autotoc_md2}{}\doxysection{\texorpdfstring{🎯 Objetivos do Projeto}{🎯 Objetivos do Projeto}}\label{md_readme_autotoc_md2}
+
+\begin{DoxyItemize}
+\item Desenvolver um sistema de telemetria robusto e preciso
+\item Coletar dados de\+:
+\begin{DoxyItemize}
+\item Altitude
+\item Aceleração
+\item Orientação
+\item Temperatura
+\end{DoxyItemize}
+\item Transmitir dados em tempo real
+\item Registrar informações para análise pós-\/voo
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md3}{}\doxysection{\texorpdfstring{🛰️ Componentes do Sistema de Telemetria}{🛰️ Componentes do Sistema de Telemetria}}\label{md_readme_autotoc_md3}
+\hypertarget{md_readme_autotoc_md4}{}\doxysubsection{\texorpdfstring{Hardware}{Hardware}}\label{md_readme_autotoc_md4}
+
+\begin{DoxyItemize}
+\item Microcontrolador\+: ESP32
+\item Sensores\+:
+\begin{DoxyItemize}
+\item Acelerômetro/\+Giroscópio
+\item Altímetro
+\item Sensor de Temperatura
+\end{DoxyItemize}
+\item Comunicação\+: ESP-\/\+NOW / Wi\+Fi
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md5}{}\doxysubsection{\texorpdfstring{Software}{Software}}\label{md_readme_autotoc_md5}
+
+\begin{DoxyItemize}
+\item Firmware em C++
+\item Protocolo de comunicação sem fio
+\item Sistema de registro de dados
+\item Interface de visualização de dados
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md6}{}\doxysection{\texorpdfstring{📂 Estrutura do Repositório}{📂 Estrutura do Repositório}}\label{md_readme_autotoc_md6}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{projeto-\/foguete-\/telemetria/}
+\DoxyCodeLine{│}
+\DoxyCodeLine{├──\ include/\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Arquivos\ de\ cabeçalho}
+\DoxyCodeLine{│\ \ \ ├──\ SensorStructs.h\ \ \ \ \#\ Estruturas\ de\ dados\ dos\ sensores}
+\DoxyCodeLine{│\ \ \ └──\ Config.h\ \ \ \ \ \ \ \ \ \ \ \#\ Configurações\ do\ sistema}
+\DoxyCodeLine{│}
+\DoxyCodeLine{├──\ src/\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Código-\/fonte}
+\DoxyCodeLine{│\ \ \ ├──\ main.cpp\ \ \ \ \ \ \ \ \ \ \ \#\ Lógica\ principal}
+\DoxyCodeLine{│\ \ \ ├──\ sensors.cpp\ \ \ \ \ \ \ \ \#\ Implementação\ dos\ sensores}
+\DoxyCodeLine{│\ \ \ └──\ communication.cpp\ \ \#\ Módulo\ de\ comunicação}
+\DoxyCodeLine{│}
+\DoxyCodeLine{├──\ docs/\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Documentação\ do\ projeto}
+\DoxyCodeLine{│}
+\DoxyCodeLine{├──\ test/\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Testes\ unitários\ e\ de\ integração}
+\DoxyCodeLine{│}
+\DoxyCodeLine{└──\ README.md\ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Este\ arquivo}
+
+\end{DoxyCode}
+\hypertarget{md_readme_autotoc_md7}{}\doxysection{\texorpdfstring{🔧 Tecnologias Utilizadas}{🔧 Tecnologias Utilizadas}}\label{md_readme_autotoc_md7}
+
+\begin{DoxyItemize}
+\item Linguagem\+: C++
+\item Plataforma\+: Platform\+IO / Arduino
+\item Microcontrolador\+: ESP32
+\item Comunicação\+: ESP-\/\+NOW, Wi\+Fi
+\item Sensores\+: MPU6050, BMP280
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md8}{}\doxysection{\texorpdfstring{🚀 Funcionalidades Principais}{🚀 Funcionalidades Principais}}\label{md_readme_autotoc_md8}
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Coleta de Dados}}
+\begin{DoxyItemize}
+\item Altitude em tempo real
+\item Aceleração nos três eixos
+\item Orientação (pitch, roll)
+\item Temperatura
+\end{DoxyItemize}
+\item {\bfseries{Comunicação}}
+\begin{DoxyItemize}
+\item Transmissão sem fio de telemetria
+\item Alcance de até 1 km
+\item Baixa latência
+\end{DoxyItemize}
+\item {\bfseries{Registro de Dados}}
+\begin{DoxyItemize}
+\item Armazenamento em cartão SD
+\item Formato CSV para análise
+\item Carimbo de tempo preciso
+\end{DoxyItemize}
+\end{DoxyEnumerate}\hypertarget{md_readme_autotoc_md9}{}\doxysection{\texorpdfstring{📊 Métricas e Precisão}{📊 Métricas e Precisão}}\label{md_readme_autotoc_md9}
+
+\begin{DoxyItemize}
+\item Precisão de altitude\+: ±0.5 metros
+\item Taxa de amostragem\+: 10 Hz
+\item Precisão de aceleração\+: ±0.1 m/s²
+\item Intervalo de temperatura\+: -\/10°C a 85°C
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md10}{}\doxysection{\texorpdfstring{🔬 Desafios do Projeto}{🔬 Desafios do Projeto}}\label{md_readme_autotoc_md10}
+
+\begin{DoxyItemize}
+\item Resistência a altas vibrações
+\item Comunicação em ambientes externos
+\item Minimizar peso do sistema
+\item Garantir precisão dos sensores
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md11}{}\doxysection{\texorpdfstring{🛠️ Configuração e Instalação}{🛠️ Configuração e Instalação}}\label{md_readme_autotoc_md11}
+\hypertarget{md_readme_autotoc_md12}{}\doxysubsection{\texorpdfstring{Pré-\/requisitos}{Pré-\/requisitos}}\label{md_readme_autotoc_md12}
+
+\begin{DoxyItemize}
+\item Platform\+IO
+\item Biblioteca ESP32
+\item Bibliotecas de sensores
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md13}{}\doxysubsection{\texorpdfstring{Passos de Instalação}{Passos de Instalação}}\label{md_readme_autotoc_md13}
+
+\begin{DoxyEnumerate}
+\item Clone o repositório
+\item Abra no Platform\+IO
+\item Instale dependências
+\item Compile e faça upload
+\end{DoxyEnumerate}\hypertarget{md_readme_autotoc_md14}{}\doxysection{\texorpdfstring{🤝 Contribuição}{🤝 Contribuição}}\label{md_readme_autotoc_md14}
+
+\begin{DoxyEnumerate}
+\item Faça um fork do projeto
+\item Crie sua branch de feature
+\item Commit suas alterações
+\item Push para a branch
+\item Abra um Pull Request
+\end{DoxyEnumerate}\hypertarget{md_readme_autotoc_md15}{}\doxysection{\texorpdfstring{📋 Documentação Adicional}{📋 Documentação Adicional}}\label{md_readme_autotoc_md15}
+
+\begin{DoxyItemize}
+\item \mbox{[}Link para documentação detalhada\mbox{]}
+\item \mbox{[}Guia de configuração de sensores\mbox{]}
+\item \mbox{[}Procedimentos de calibração\mbox{]}
+\end{DoxyItemize}\hypertarget{md_readme_autotoc_md16}{}\doxysection{\texorpdfstring{📄 Licença}{📄 Licença}}\label{md_readme_autotoc_md16}
+GPL 

@@ -1,0 +1,68 @@
+\doxysection{Sensor\+Data Struct Reference}
+\hypertarget{struct_sensor_data}{}\label{struct_sensor_data}\index{SensorData@{SensorData}}
+
+
+Estrutura consolidada de dados de sensores.  
+
+
+
+
+{\ttfamily \#include $<$Structs.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_acelerometer_data}{Acelerometer\+Data}} \mbox{\hyperlink{struct_sensor_data_a5e8a0504c1d7ddda5dadbfe23d11e4d4}{acelerometro}}
+\begin{DoxyCompactList}\small\item\em Dados do acelerômetro e giroscópio. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_altimeter_data}{Altimeter\+Data}} \mbox{\hyperlink{struct_sensor_data_ae5f71eea28cbc05e742430a64fe475e5}{altimetro}}
+\begin{DoxyCompactList}\small\item\em Dados do altímetro. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{struct_sensor_data_ac0fc3ab7acf66b6be6f8baa8625691ce}{timestamp}}
+\begin{DoxyCompactList}\small\item\em Carimbo de tempo da leitura. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Estrutura consolidada de dados de sensores. 
+
+Combina dados do acelerômetro, altímetro e timestamp em uma única estrutura para transmissão e processamento.
+
+\begin{DoxyNote}{Note}
+Uso de \#pragma pack para garantir alinhamento de bytes consistente entre diferentes plataformas 
+\end{DoxyNote}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{struct_sensor_data_a5e8a0504c1d7ddda5dadbfe23d11e4d4}\index{SensorData@{SensorData}!acelerometro@{acelerometro}}
+\index{acelerometro@{acelerometro}!SensorData@{SensorData}}
+\doxysubsubsection{\texorpdfstring{acelerometro}{acelerometro}}
+{\footnotesize\ttfamily \label{struct_sensor_data_a5e8a0504c1d7ddda5dadbfe23d11e4d4} 
+\mbox{\hyperlink{struct_acelerometer_data}{Acelerometer\+Data}} Sensor\+Data\+::acelerometro}
+
+
+
+Dados do acelerômetro e giroscópio. 
+
+Contém informações de movimento e orientação \Hypertarget{struct_sensor_data_ae5f71eea28cbc05e742430a64fe475e5}\index{SensorData@{SensorData}!altimetro@{altimetro}}
+\index{altimetro@{altimetro}!SensorData@{SensorData}}
+\doxysubsubsection{\texorpdfstring{altimetro}{altimetro}}
+{\footnotesize\ttfamily \label{struct_sensor_data_ae5f71eea28cbc05e742430a64fe475e5} 
+\mbox{\hyperlink{struct_altimeter_data}{Altimeter\+Data}} Sensor\+Data\+::altimetro}
+
+
+
+Dados do altímetro. 
+
+Contém informações de pressão e altitude \Hypertarget{struct_sensor_data_ac0fc3ab7acf66b6be6f8baa8625691ce}\index{SensorData@{SensorData}!timestamp@{timestamp}}
+\index{timestamp@{timestamp}!SensorData@{SensorData}}
+\doxysubsubsection{\texorpdfstring{timestamp}{timestamp}}
+{\footnotesize\ttfamily \label{struct_sensor_data_ac0fc3ab7acf66b6be6f8baa8625691ce} 
+float Sensor\+Data\+::timestamp}
+
+
+
+Carimbo de tempo da leitura. 
+
+Marca temporal da coleta dos dados dos sensores 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/Structs.\+h\end{DoxyCompactItemize}

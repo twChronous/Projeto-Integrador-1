@@ -1,0 +1,186 @@
+\doxysection{include/\+Config.h File Reference}
+\hypertarget{_config_8h}{}\label{_config_8h}\index{include/Config.h@{include/Config.h}}
+
+
+Configurações centralizadas para o projeto de comunicação ESP-\/\+NOW.  
+
+
+{\ttfamily \#include $<$cstdint$>$}\newline
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespace_config}{Config}}
+\begin{DoxyCompactList}\small\item\em Namespace principal para configurações do sistema. \end{DoxyCompactList}\item 
+namespace \mbox{\hyperlink{namespace_network}{Network}}
+\begin{DoxyCompactList}\small\item\em Configurações de rede e comunicação. \end{DoxyCompactList}\item 
+namespace \mbox{\hyperlink{namespace_hardware}{Hardware}}
+\begin{DoxyCompactList}\small\item\em Configurações de hardware específicas. \end{DoxyCompactList}\item 
+namespace \mbox{\hyperlink{namespace_timing}{Timing}}
+\begin{DoxyCompactList}\small\item\em Configurações de temporização. \end{DoxyCompactList}\item 
+namespace \mbox{\hyperlink{namespace_esp_now}{Esp\+Now}}
+\begin{DoxyCompactList}\small\item\em Configurações específicas para protocolo ESP-\/\+NOW. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+constexpr const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{_config_8h_a4289574c60ec711d5d288f222843691e}{Config\+::\+Network\+::\+SSID}} = "{}ESP-\/NOW-\/Server"{}
+\begin{DoxyCompactList}\small\item\em Nome do Access Point Wi\+Fi. \end{DoxyCompactList}\item 
+constexpr const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{_config_8h_ab410db46341a20200b5d81c1e1c179a7}{Config\+::\+Network\+::\+PASSWORD}} = "{}12345678"{}
+\begin{DoxyCompactList}\small\item\em Senha do Access Point Wi\+Fi. \end{DoxyCompactList}\item 
+constexpr uint8\+\_\+t \mbox{\hyperlink{_config_8h_a7027dcb12652e4edea70f54aebee7913}{Config\+::\+Network\+::\+WIFI\+\_\+\+CHANNEL}} = 1U
+\begin{DoxyCompactList}\small\item\em Canal Wi\+Fi para comunicação. \end{DoxyCompactList}\item 
+constexpr uint16\+\_\+t \mbox{\hyperlink{_config_8h_a2811b6f6abf88075ddcf40dbc0964888}{Config\+::\+Network\+::\+HTTP\+\_\+\+PORT}} = 80U
+\begin{DoxyCompactList}\small\item\em Porta padrão para servidor HTTP. \end{DoxyCompactList}\item 
+constexpr const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{_config_8h_adebcec8cfff35cf15499b73e17ec18a0}{Config\+::\+Network\+::\+AP\+\_\+\+IP}} = "{}192.\+168.\+4.\+1"{}
+\begin{DoxyCompactList}\small\item\em Endereço IP do Access Point. \end{DoxyCompactList}\item 
+constexpr const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{_config_8h_ab84c94d07e15ef615a939d568ccf0abf}{Config\+::\+Network\+::\+SUBNET\+\_\+\+MASK}} = "{}255.\+255.\+255.\+0"{}
+\begin{DoxyCompactList}\small\item\em Máscara de sub-\/rede. \end{DoxyCompactList}\item 
+constexpr uint8\+\_\+t \mbox{\hyperlink{_config_8h_ac9830d34085e33f9a16b499617b4bf8e}{Config\+::\+Network\+::\+BROADCAST\+\_\+\+ADDRESS}} \mbox{[}6\mbox{]} = \{0x10, 0x06, 0x1C, 0x69, 0x\+C1, 0x44\}
+\begin{DoxyCompactList}\small\item\em Endereço MAC para comunicação broadcast. \end{DoxyCompactList}\item 
+constexpr uint8\+\_\+t \mbox{\hyperlink{_config_8h_a9f248976370faeefe9319af2c4e02fc9}{Config\+::\+Hardware\+::\+LED\+\_\+\+PIN}} = 2U
+\begin{DoxyCompactList}\small\item\em Pino do LED interno. \end{DoxyCompactList}\item 
+constexpr uint32\+\_\+t \mbox{\hyperlink{_config_8h_ac7740df926844d7a33f15b53c5fec9b3}{Config\+::\+Hardware\+::\+BAUD\+\_\+\+RATE}} = 115200U
+\begin{DoxyCompactList}\small\item\em Taxa de transmissão serial. \end{DoxyCompactList}\item 
+constexpr uint16\+\_\+t \mbox{\hyperlink{_config_8h_a66dc51200d63c69d9b3cd21be9e8779f}{Config\+::\+Timing\+::\+WIFI\+\_\+\+CONNECT\+\_\+\+TIMEOUT}} = 10000U
+\begin{DoxyCompactList}\small\item\em Tempo máximo de conexão Wi\+Fi. \end{DoxyCompactList}\item 
+constexpr uint16\+\_\+t \mbox{\hyperlink{_config_8h_a6939a1d1e190729b128e000a22096f3f}{Config\+::\+Timing\+::\+WEB\+\_\+\+REFRESH\+\_\+\+INTERVAL}} = 2000U
+\begin{DoxyCompactList}\small\item\em Intervalo de atualização da página web. \end{DoxyCompactList}\item 
+constexpr uint8\+\_\+t \mbox{\hyperlink{_config_8h_a82de5a35076a9945839ed3d9f16b4505}{Config\+::\+Esp\+Now\+::\+CHANNEL}} = 1U
+\begin{DoxyCompactList}\small\item\em Canal de comunicação ESP-\/\+NOW. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Configurações centralizadas para o projeto de comunicação ESP-\/\+NOW. 
+
+\begin{DoxyVersion}{Version}
+1.\+0 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+Maio/2025
+\end{DoxyDate}
+Este arquivo define constantes de configuração para rede, hardware, temporização e comunicação ESP-\/\+NOW. 
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{_config_8h_adebcec8cfff35cf15499b73e17ec18a0}\index{Config.h@{Config.h}!AP\_IP@{AP\_IP}}
+\index{AP\_IP@{AP\_IP}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{AP\_IP}{AP\_IP}}
+{\footnotesize\ttfamily \label{_config_8h_adebcec8cfff35cf15499b73e17ec18a0} 
+const char\texorpdfstring{$\ast$}{*} Config\+::\+Network\+::\+AP\+\_\+\+IP = "{}192.\+168.\+4.\+1"{}\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Endereço IP do Access Point. 
+
+Endereço IP fixo para o ponto de acesso \Hypertarget{_config_8h_ac7740df926844d7a33f15b53c5fec9b3}\index{Config.h@{Config.h}!BAUD\_RATE@{BAUD\_RATE}}
+\index{BAUD\_RATE@{BAUD\_RATE}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{BAUD\_RATE}{BAUD\_RATE}}
+{\footnotesize\ttfamily \label{_config_8h_ac7740df926844d7a33f15b53c5fec9b3} 
+uint32\+\_\+t Config\+::\+Hardware\+::\+BAUD\+\_\+\+RATE = 115200U\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Taxa de transmissão serial. 
+
+Velocidade de comunicação para depuração e monitoramento \Hypertarget{_config_8h_ac9830d34085e33f9a16b499617b4bf8e}\index{Config.h@{Config.h}!BROADCAST\_ADDRESS@{BROADCAST\_ADDRESS}}
+\index{BROADCAST\_ADDRESS@{BROADCAST\_ADDRESS}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{BROADCAST\_ADDRESS}{BROADCAST\_ADDRESS}}
+{\footnotesize\ttfamily \label{_config_8h_ac9830d34085e33f9a16b499617b4bf8e} 
+uint8\+\_\+t Config\+::\+Network\+::\+BROADCAST\+\_\+\+ADDRESS\mbox{[}6\mbox{]} = \{0x10, 0x06, 0x1C, 0x69, 0x\+C1, 0x44\}\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Endereço MAC para comunicação broadcast. 
+
+Endereço utilizado para transmissão para todos os dispositivos \begin{DoxyNote}{Note}
+Substitua pelo endereço MAC real do seu dispositivo 
+\end{DoxyNote}
+\Hypertarget{_config_8h_a82de5a35076a9945839ed3d9f16b4505}\index{Config.h@{Config.h}!CHANNEL@{CHANNEL}}
+\index{CHANNEL@{CHANNEL}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{CHANNEL}{CHANNEL}}
+{\footnotesize\ttfamily \label{_config_8h_a82de5a35076a9945839ed3d9f16b4505} 
+uint8\+\_\+t Config\+::\+Esp\+Now\+::\+CHANNEL = 1U\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Canal de comunicação ESP-\/\+NOW. 
+
+Canal específico para transmissão de dados ESP-\/\+NOW \Hypertarget{_config_8h_a2811b6f6abf88075ddcf40dbc0964888}\index{Config.h@{Config.h}!HTTP\_PORT@{HTTP\_PORT}}
+\index{HTTP\_PORT@{HTTP\_PORT}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{HTTP\_PORT}{HTTP\_PORT}}
+{\footnotesize\ttfamily \label{_config_8h_a2811b6f6abf88075ddcf40dbc0964888} 
+uint16\+\_\+t Config\+::\+Network\+::\+HTTP\+\_\+\+PORT = 80U\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Porta padrão para servidor HTTP. 
+
+Porta utilizada para serviço web \Hypertarget{_config_8h_a9f248976370faeefe9319af2c4e02fc9}\index{Config.h@{Config.h}!LED\_PIN@{LED\_PIN}}
+\index{LED\_PIN@{LED\_PIN}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{LED\_PIN}{LED\_PIN}}
+{\footnotesize\ttfamily \label{_config_8h_a9f248976370faeefe9319af2c4e02fc9} 
+uint8\+\_\+t Config\+::\+Hardware\+::\+LED\+\_\+\+PIN = 2U\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Pino do LED interno. 
+
+Número do pino GPIO para controle do LED \Hypertarget{_config_8h_ab410db46341a20200b5d81c1e1c179a7}\index{Config.h@{Config.h}!PASSWORD@{PASSWORD}}
+\index{PASSWORD@{PASSWORD}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{PASSWORD}{PASSWORD}}
+{\footnotesize\ttfamily \label{_config_8h_ab410db46341a20200b5d81c1e1c179a7} 
+const char\texorpdfstring{$\ast$}{*} Config\+::\+Network\+::\+PASSWORD = "{}12345678"{}\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Senha do Access Point Wi\+Fi. 
+
+Chave de segurança para conexão na rede \Hypertarget{_config_8h_a4289574c60ec711d5d288f222843691e}\index{Config.h@{Config.h}!SSID@{SSID}}
+\index{SSID@{SSID}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{SSID}{SSID}}
+{\footnotesize\ttfamily \label{_config_8h_a4289574c60ec711d5d288f222843691e} 
+const char\texorpdfstring{$\ast$}{*} Config\+::\+Network\+::\+SSID = "{}ESP-\/NOW-\/Server"{}\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Nome do Access Point Wi\+Fi. 
+
+SSID utilizado para identificação da rede \Hypertarget{_config_8h_ab84c94d07e15ef615a939d568ccf0abf}\index{Config.h@{Config.h}!SUBNET\_MASK@{SUBNET\_MASK}}
+\index{SUBNET\_MASK@{SUBNET\_MASK}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{SUBNET\_MASK}{SUBNET\_MASK}}
+{\footnotesize\ttfamily \label{_config_8h_ab84c94d07e15ef615a939d568ccf0abf} 
+const char\texorpdfstring{$\ast$}{*} Config\+::\+Network\+::\+SUBNET\+\_\+\+MASK = "{}255.\+255.\+255.\+0"{}\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Máscara de sub-\/rede. 
+
+Configura o range de endereços da rede local \Hypertarget{_config_8h_a6939a1d1e190729b128e000a22096f3f}\index{Config.h@{Config.h}!WEB\_REFRESH\_INTERVAL@{WEB\_REFRESH\_INTERVAL}}
+\index{WEB\_REFRESH\_INTERVAL@{WEB\_REFRESH\_INTERVAL}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{WEB\_REFRESH\_INTERVAL}{WEB\_REFRESH\_INTERVAL}}
+{\footnotesize\ttfamily \label{_config_8h_a6939a1d1e190729b128e000a22096f3f} 
+uint16\+\_\+t Config\+::\+Timing\+::\+WEB\+\_\+\+REFRESH\+\_\+\+INTERVAL = 2000U\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Intervalo de atualização da página web. 
+
+Período entre atualizações da interface web (em milissegundos) \Hypertarget{_config_8h_a7027dcb12652e4edea70f54aebee7913}\index{Config.h@{Config.h}!WIFI\_CHANNEL@{WIFI\_CHANNEL}}
+\index{WIFI\_CHANNEL@{WIFI\_CHANNEL}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{WIFI\_CHANNEL}{WIFI\_CHANNEL}}
+{\footnotesize\ttfamily \label{_config_8h_a7027dcb12652e4edea70f54aebee7913} 
+uint8\+\_\+t Config\+::\+Network\+::\+WIFI\+\_\+\+CHANNEL = 1U\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Canal Wi\+Fi para comunicação. 
+
+Canal utilizado para transmissão de dados \Hypertarget{_config_8h_a66dc51200d63c69d9b3cd21be9e8779f}\index{Config.h@{Config.h}!WIFI\_CONNECT\_TIMEOUT@{WIFI\_CONNECT\_TIMEOUT}}
+\index{WIFI\_CONNECT\_TIMEOUT@{WIFI\_CONNECT\_TIMEOUT}!Config.h@{Config.h}}
+\doxysubsubsection{\texorpdfstring{WIFI\_CONNECT\_TIMEOUT}{WIFI\_CONNECT\_TIMEOUT}}
+{\footnotesize\ttfamily \label{_config_8h_a66dc51200d63c69d9b3cd21be9e8779f} 
+uint16\+\_\+t Config\+::\+Timing\+::\+WIFI\+\_\+\+CONNECT\+\_\+\+TIMEOUT = 10000U\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+Tempo máximo de conexão Wi\+Fi. 
+
+Limite de tempo para estabelecer conexão Wi\+Fi (em milissegundos) 
