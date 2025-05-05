@@ -47,6 +47,8 @@ projeto-foguete-telemetria/
 │
 ├── docs/                  # Documentação do projeto
 │
+├── resources/             # Arquivos de imagem
+│
 ├── test/                  # Testes unitários e de integração
 │
 └── README.md              # Este arquivo
@@ -59,6 +61,10 @@ projeto-foguete-telemetria/
 - Microcontrolador: ESP32
 - Comunicação: ESP-NOW, WiFi
 - Sensores: MPU6050, BMP280
+
+<div style="text-align: center;">
+    <img src="./resources/base.schematic.png" alt="Esquematico do projeto" width="600">
+</div>
 
 ## 🚀 Funcionalidades Principais
 
@@ -89,7 +95,6 @@ projeto-foguete-telemetria/
 
 - Resistência a altas vibrações
 - Comunicação em ambientes externos
-- Minimizar peso do sistema
 - Garantir precisão dos sensores
 
 ## 🛠️ Configuração e Instalação
@@ -116,10 +121,8 @@ projeto-foguete-telemetria/
 
 ## 📋 Documentação Adicional
 
-- [Link para documentação detalhada]
-- [Guia de configuração de sensores]
-- [Procedimentos de calibração]
+- [Documentação do projeto](https://twchronous.github.io/Projeto-Integrador-1/md_readme.html)
 
 ## 📄 Licença
 
-GPL
+[GPL](./LICENSE)
