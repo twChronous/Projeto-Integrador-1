@@ -125,4 +125,4 @@ projeto-foguete-telemetria/
 
 ## 📄 Licença
 
-[GPL](./LICENSE)
+[CC0](./LICENSE)
