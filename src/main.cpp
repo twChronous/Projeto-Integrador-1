@@ -23,6 +23,22 @@
  /// @brief Flag para indicar atualização de dados
  volatile bool dadosAtualizados = false;
  
+uint16_t nextSequenceId = 0;
+
+struct LaunchCommand {
+  CommandType type;
+  uint32_t timestamp;
+  uint16_t sequenceId;
+  uint8_t checksum;
+
+  uint8_t calculateChecksum() const {
+    // Simples checksum: soma de bytes
+    uint8_t sum = static_cast<uint8_t>(type) + 
+                  (timestamp & 0xFF) + ((timestamp >> 8) & 0xFF) + ((timestamp >> 16) & 0xFF) + ((timestamp >> 24) & 0xFF) +
+                  (sequenceId & 0xFF) + ((sequenceId >> 8) & 0xFF);
+    return sum;
+  }
+};
  /**
   * @brief Configura o canal e região do WiFi para ESP-NOW
   * 
@@ -159,7 +175,24 @@
   
     server.send(200, "application/json", jsonResponse);
   }
- 
+
+void sendFlightCommand(CommandType type) {
+  LaunchCommand cmd;
+  cmd.type = type;
+  cmd.timestamp = millis();
+  cmd.sequenceId = nextSequenceId++;
+  cmd.checksum = cmd.calculateChecksum();
+
+  esp_err_t result = esp_now_send(Config::EspNow::broadcastAddress, reinterpret_cast<uint8_t*>(&cmd), sizeof(cmd));
+
+  if (result == ESP_OK) {
+    Serial.printf("Comando %s enviado com sucesso! [Seq: %u]\n", 
+      type == CommandType::START_FLIGHT ? "INICIAR" : "ENCERRAR", cmd.sequenceId);
+  } else {
+    Serial.printf("Falha ao enviar comando %s! Código de erro: %d\n", 
+      type == CommandType::START_FLIGHT ? "INICIAR" : "ENCERRAR", result);
+  }
+}
  /**
   * @brief Função de configuração inicial do sistema
   * 
@@ -181,6 +214,9 @@
     Serial.print("IP do servidor: ");
     Serial.println(WiFi.softAPIP());
     
+    Serial.println("MAC da ESP32:");
+    Serial.println(WiFi.softAPmacAddress());
+    
     // Configuração do canal WiFi e ESP-NOW
     configureEspNowChannel();
     
@@ -196,6 +232,15 @@
     // Rotas do servidor web
     server.on("/", handleRoot);
     server.on("/json", handleJSON);
+    server.onNotFound([]() {
+        server.send(404, "text/plain", "404 Not Found");
+    });
+    server.on("/launch", []() {
+        sendFlightCommand(CommandType::START_FLIGHT);
+    });
+    server.on("/arrival", []() {
+        sendFlightCommand(CommandType::END_FLIGHT);
+    });
 
     // Inicia servidor web
     server.begin();

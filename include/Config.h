@@ -71,7 +71,8 @@
  
          /// @brief Taxa de transmissão serial
          /// @details Velocidade de comunicação para depuração e monitoramento
-         constexpr uint32_t BAUD_RATE = 115200U;       
+         constexpr uint32_t BAUD_RATE = 115200U;
+
      }
  
      /**
@@ -99,7 +100,8 @@
      namespace EspNow {
          /// @brief Canal de comunicação ESP-NOW
          /// @details Canal específico para transmissão de dados ESP-NOW
-         constexpr uint8_t CHANNEL = 1U;               
+         constexpr uint8_t CHANNEL = 1U;
+         constexpr uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
      }
  }
  

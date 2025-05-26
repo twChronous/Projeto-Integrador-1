@@ -12,7 +12,52 @@
  #define SENSOR_STRUCTS_H
  
  #include <cstdint>  // Para tipos de inteiro de tamanho fixo
- 
+
+ // Enumeração de tipos de comandos de controle
+enum CommandType {
+  NO_COMMAND = 0,     // Sem comando
+  START_FLIGHT = 1,   // Iniciar registro de voo
+  END_FLIGHT = 2,     // Finalizar registro de voo
+  ABORT_MISSION = 3,  // Abortar missão
+  RESET_SYSTEM = 4    // Reiniciar sistema
+};
+
+/**
+ * @brief Estrutura para comandos de controle do sistema
+ * @details Permite enviar comandos via ESP-NOW com metadados
+ */
+struct ControlCommand {
+  CommandType type;       // Tipo de comando
+  uint32_t timestamp;     // Timestamp do comando
+  uint16_t sequenceId;    // ID de sequência para rastreabilidade
+  uint8_t  checksum;      // Checksum simples para validação
+
+  /**
+   * @brief Calcula checksum básico
+   * @return Valor de checksum
+   */
+  uint8_t calculateChecksum() const {
+      uint8_t sum = 0;
+      const uint8_t* data = reinterpret_cast<const uint8_t*>(this);
+      for (size_t i = 0; i < sizeof(ControlCommand) - sizeof(checksum); ++i) {
+          sum += data[i];
+      }
+      return sum;
+  }
+
+  /**
+   * @brief Valida o checksum do comando
+   * @return true se o checksum for válido, false caso contrário
+   */
+  bool isValid() const {
+      return checksum == calculateChecksum();
+  }
+};
+
+// Verificação de tamanho da estrutura em tempo de compilação
+static_assert(sizeof(ControlCommand) == 12, "Tamanho da estrutura ControlCommand deve ser 12 bytes");
+
+
  /**
   * @brief Estrutura de dados do acelerômetro e giroscópio
   * 
