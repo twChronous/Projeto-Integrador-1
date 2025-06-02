@@ -141,20 +141,37 @@ projeto-foguete-telemetria/
 {
   "sensors": {
     "altimetro": {
-      "altitude": 0.00,
-      "pressure": 0
+      "altitude": 0.0,
+      "pressure": 0.0
     },
     "acelerometro": {
-      "accX": 0.00,
-      "accY": 0.00,
-      "accZ": 0.00,
-      "gyroX": 0.00,
-      "gyroY": 0.00,
-      "gyroZ": 0.00,
-      "temp": 0.00,
-      "roll": 0.00,
-      "pitch": 0.00
+      "accX": 0.0,
+      "accY": 0.0,
+      "accZ": 0.0,
+      "gyroX": 0.0,
+      "gyroY": 0,
+      "gyroZ": 0.0,
+      "temp": 0.0,
+      "roll": 0.0,
+      "pitch": 0.0
     },
+    "tensao": {
+      "voltage_base": 0,
+      "voltage_rocket": 0
+    },
+    "gps": {
+      "latitude": 0.0,
+      "longitude": 0.0,
+      "altitude": 0.0,
+      "day": 01,
+      "month": 12,
+      "year": 2000,
+      "hour": 00,
+      "minute": 00,
+      "second": 00
+    },
+    "esp_now_channel": 1,
+    "mac_address": "FF:FF:FF:FF:FF",
     "timestamp": 0
   }
 }
