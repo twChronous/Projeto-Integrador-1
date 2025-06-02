@@ -1,8 +1,8 @@
 /**
  * @file SensorStructs.h
  * @brief Definições de estruturas de dados para sensores
- * @version 1.0
- * @date Maio/2025
+ * @version 1.2
+ * @date Junho/2025
  * 
  * Este arquivo define as estruturas de dados utilizadas para 
  * armazenar informações de sensores de movimento e altitude.
@@ -126,7 +126,69 @@ static_assert(sizeof(ControlCommand) == 12, "Tamanho da estrutura ControlCommand
      float altitude;  
  };
  #pragma pack(pop)
- 
+
+ /**
+  * @brief Estrutura de dados do sensor de tensão
+  * 
+  * Armazena informações de tensão elétrica da bateria.
+  * 
+  * @note Uso de #pragma pack para garantir alinhamento de bytes 
+  * consistente entre diferentes plataformas
+  */
+ #pragma pack(push, 1)
+ struct VoltageData {
+     /// @brief Tensão medida em volts (V)
+     /// @details Representa a tensão elétrica no momento da leitura na base do foguete
+     float voltage_base;  
+    /// @brief Tensão medida em volts (V)
+     /// @details Representa a tensão elétrica no momento da leitura do foguete
+     float voltage_rocket;  
+ };
+ #pragma pack(pop)
+
+ /**
+  * @brief Estrutura de dados do GPS
+  * 
+  * Armazena informações de posicionamento geográfico.
+  * 
+  * @note Uso de #pragma pack para garantir alinhamento de bytes 
+  * consistente entre diferentes plataformas
+  */
+ #pragma pack(push, 1)
+ struct GPSData {
+     /// @brief Latitude em graus decimais
+     /// @details Representa a posição geográfica no eixo norte-sul
+     float latitude;
+
+     /// @brief Longitude em graus decimais
+     /// @details Representa a posição geográfica no eixo leste-oeste
+     float longitude;
+
+     /// @brief Altitude calculada em metros
+     /// @details Altitude derivada da medição de posicionamento GPS
+     float altitude;
+
+     /// @brief Dia do mês segundo o GPS
+     /// @details Representa o dia do mês da leitura GPS horario de Greenwich 
+     int day;
+     /// @brief Mês do ano segundo o GPS
+     /// @details Representa o mês do ano da leitura GPS horario de Greenwich
+     int month;
+     /// @brief Ano segundo o GPS
+     /// @details Representa o ano da leitura GPS horario de Greenwich
+     int year;
+     /// @brief Hora do dia segundo o GPS
+     /// @details Representa a hora do dia da leitura GPS horario de Greenwich
+     int hour;
+     /// @brief Minuto do dia segundo o GPS
+     /// @details Representa o minuto do dia da leitura GPS horario de Greenwich
+     int minute;
+     /// @brief Segundo do dia segundo o GPS
+     /// @details Representa o segundo do dia da leitura GPS horario de Greenwich
+     int second;
+
+ };
+ #pragma pack(pop)
  /**
   * @brief Estrutura consolidada de dados de sensores
   * 
@@ -146,6 +208,14 @@ static_assert(sizeof(ControlCommand) == 12, "Tamanho da estrutura ControlCommand
      /// @details Contém informações de pressão e altitude
      AltimeterData altimetro;        
  
+    /// @brief Dados do sensor de tensão
+    /// @details Contém informações de tensão elétrica da bateria
+    VoltageData tensao;
+
+    /// @brief Dados do GPS
+    /// @details Contém informações de posicionamento geográfico
+    GPSData gps;
+
      /// @brief Carimbo de tempo da leitura
      /// @details Marca temporal da coleta dos dados dos sensores
      float timestamp;                
@@ -153,4 +223,3 @@ static_assert(sizeof(ControlCommand) == 12, "Tamanho da estrutura ControlCommand
  #pragma pack(pop)
  
  #endif // SENSOR_STRUCTS_H
- 

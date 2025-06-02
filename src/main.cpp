@@ -16,7 +16,11 @@
  
  /// @brief Dados globais recebidos via ESP-NOW
  SensorData dadosRecebidos = {0};
- 
+
+
+esp_now_peer_info_t peerInfo = {};
+
+const float VREF = 3.3;  // Tensão de referência do ADC (ESP32 usa 3.3V)
  /// @brief Servidor web na porta 80
  WebServer server(80);
  
@@ -24,6 +28,9 @@
  volatile bool dadosAtualizados = false;
  
 uint16_t nextSequenceId = 0;
+
+ /** @brief Estrutura global para armazenamento de dados de telemetria */
+ SensorData sensorData = {};
 
 struct LaunchCommand {
   CommandType type;
@@ -60,7 +67,11 @@ struct LaunchCommand {
      wifi_second_chan_t secondChan = WIFI_SECOND_CHAN_NONE;
      esp_wifi_set_channel(Config::EspNow::CHANNEL, secondChan);
  }
- 
+ void onEspNowSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  if (status != ESP_NOW_SEND_SUCCESS) {
+    Serial.println("Falha no envio do comando ESP-NOW");
+  }
+}
  /**
   * @brief Gera página HTML com dados dos sensores
   * 
@@ -96,6 +107,11 @@ struct LaunchCommand {
        "<tr><td>Pitch</td><td>" + String(dadosRecebidos.acelerometro.pitch, 2) + "</td></tr>"
        "<tr><td>Altitude</td><td>" + String(dadosRecebidos.altimetro.altitude, 2) + "</td></tr>"
        "<tr><td>Pressure</td><td>" + String(dadosRecebidos.altimetro.pressure, 2) + "</td></tr>"
+       "<tr><td>Voltage (Base)</td><td>" + String(dadosRecebidos.tensao.voltage_base, 2) + "</td></tr>"
+       "<tr><td>Voltage (Rocket)</td><td>" + String(dadosRecebidos.tensao.voltage_rocket, 2) + "</td></tr>"
+       "<tr><td>Latitude</td><td>" + String(dadosRecebidos.gps.latitude, 6) + "</td></tr>"
+       "<tr><td>Longitude</td><td>" + String(dadosRecebidos.gps.longitude, 6) + "</td></tr>"
+       "<tr><td>Altitude GPS</td><td>" + String(dadosRecebidos.gps.altitude, 2) + "</td></tr>"
        "<tr><td>Timestamp</td><td>" + String(dadosRecebidos.timestamp) + "</td></tr>"
        "</table>"
        "</body></html>";
@@ -153,42 +169,116 @@ struct LaunchCommand {
   * Cria uma estrutura JSON organizada com informações de altímetro, 
   * acelerômetro e timestamp.
   */
+ // Retorna uma string JSON para os dados do altímetro. Ex: {"altitude":VAL,"pressure":VAL}
+String getAltimetroPayloadJson() {
+    return "{\"altitude\":" + String(dadosRecebidos.altimetro.altitude, 2) +
+           ",\"pressure\":" + String(dadosRecebidos.altimetro.pressure, 2) + "}";
+}
+
+// Retorna uma string JSON para os dados do acelerômetro. Ex: {"accX":VAL,...,"pitch":VAL}
+String getAcelerometroPayloadJson() {
+    return "{\"accX\":" + String(dadosRecebidos.acelerometro.accX, 2) +
+           ",\"accY\":" + String(dadosRecebidos.acelerometro.accY, 2) +
+           ",\"accZ\":" + String(dadosRecebidos.acelerometro.accZ, 2) +
+           ",\"gyroX\":" + String(dadosRecebidos.acelerometro.gyroX, 2) +
+           ",\"gyroY\":" + String(dadosRecebidos.acelerometro.gyroY, 2) +
+           ",\"gyroZ\":" + String(dadosRecebidos.acelerometro.gyroZ, 2) +
+           ",\"temp\":" + String(dadosRecebidos.acelerometro.temp, 2) +
+           ",\"roll\":" + String(dadosRecebidos.acelerometro.roll, 2) +
+           ",\"pitch\":" + String(dadosRecebidos.acelerometro.pitch, 2) + "}";
+}
+
+// Retorna uma string JSON para os dados de tensão. Ex: {"voltage_base":VAL,"voltage_rocket":VAL}
+String getTensaoPayloadJson() {
+    return "{\"voltage_base\":" + String(sensorData.tensao.voltage_base, 2) +
+           ",\"voltage_rocket\":" + String(dadosRecebidos.tensao.voltage_rocket, 2) + "}";
+}
+
+// Retorna uma string JSON para os dados do GPS. Ex: {"latitude":VAL,...,"second":VAL}
+String getGpsPayloadJson() {
+    return "{\"latitude\":" + String(dadosRecebidos.gps.latitude, 6) +
+           ",\"longitude\":" + String(dadosRecebidos.gps.longitude, 6) +
+           ",\"altitude\":" + String(dadosRecebidos.gps.altitude, 2) +
+           ",\"day\":" + String(dadosRecebidos.gps.day) +
+           ",\"month\":" + String(dadosRecebidos.gps.month) +
+           ",\"year\":" + String(dadosRecebidos.gps.year) +
+           ",\"hour\":" + String(dadosRecebidos.gps.hour) +
+           ",\"minute\":" + String(dadosRecebidos.gps.minute) +
+           ",\"second\":" + String(dadosRecebidos.gps.second) + "}";
+}
+
+String getBaseStationInfoJson() {
+    return "\"esp_now_channel\":" + String(Config::EspNow::CHANNEL) +
+           ",\"mac_address\":\"" + WiFi.macAddress() + "\"" + // MAC da interface STA
+           ",\"timestamp\":" + String(dadosRecebidos.timestamp);
+}
  void handleJSON() {
-    String jsonResponse = "{\"sensors\":{" 
-      "\"altimetro\":{" 
-        "\"altitude\":" + String(dadosRecebidos.altimetro.altitude, 2) + 
-        ",\"pressure\":" + String(dadosRecebidos.altimetro.pressure, 2) + 
-      "}," 
-      "\"acelerometro\":{" 
-        "\"accX\":" + String(dadosRecebidos.acelerometro.accX, 2) + 
-        ",\"accY\":" + String(dadosRecebidos.acelerometro.accY, 2) + 
-        ",\"accZ\":" + String(dadosRecebidos.acelerometro.accZ, 2) + 
-        ",\"gyroX\":" + String(dadosRecebidos.acelerometro.gyroX, 2) + 
-        ",\"gyroY\":" + String(dadosRecebidos.acelerometro.gyroY, 2) + 
-        ",\"gyroZ\":" + String(dadosRecebidos.acelerometro.gyroZ, 2) + 
-        ",\"temp\":" + String(dadosRecebidos.acelerometro.temp, 2) + 
-        ",\"roll\":" + String(dadosRecebidos.acelerometro.roll, 2) + 
-        ",\"pitch\":" + String(dadosRecebidos.acelerometro.pitch, 2) + 
-      "}" 
-      ",\"timestamp\":" + String(dadosRecebidos.timestamp) + 
-    "}}";
-  
+    String altimetroJson = getAltimetroPayloadJson();
+    String acelerometroJson = getAcelerometroPayloadJson();
+    String tensaoJson = getTensaoPayloadJson();
+    String gpsJson = getGpsPayloadJson();
+    String baseInfoJson = getBaseStationInfoJson();
+
+    String jsonResponse = "{\"sensors\":{";
+    jsonResponse += "\"altimetro\":" + altimetroJson + ",";
+    jsonResponse += "\"acelerometro\":" + acelerometroJson + ",";
+    jsonResponse += "\"tensao\":" + tensaoJson + ",";
+    jsonResponse += "\"gps\":" + gpsJson + ","; // Vírgula aqui, pois baseInfoJson segue
+    jsonResponse += baseInfoJson; // Esta já contém as chaves e não termina com vírgula
+    jsonResponse += "}}";
+
     server.send(200, "application/json", jsonResponse);
+}
+// Handler para retornar apenas dados do altímetro
+void handleAltimetroJSON() {
+    String jsonResponse = "{\"altimetro\":" + getAltimetroPayloadJson() + "}";
+    server.send(200, "application/json", jsonResponse);
+}
+
+// Handler para retornar apenas dados do acelerômetro
+void handleAcelerometroJSON() {
+    String jsonResponse = "{\"acelerometro\":" + getAcelerometroPayloadJson() + "}";
+    server.send(200, "application/json", jsonResponse);
+}
+
+// Handler para retornar apenas dados de tensão
+void handleTensaoJSON() {
+    String jsonResponse = "{\"tensao\":" + getTensaoPayloadJson() + "}";
+    server.send(200, "application/json", jsonResponse);
+}
+
+// Handler para retornar apenas dados do GPS
+void handleGpsJSON() {
+    String jsonResponse = "{\"gps\":" + getGpsPayloadJson() + "}";
+    server.send(200, "application/json", jsonResponse);
+}
+void sendFlightCommand(CommandType type) {
+  // Configuração de peer antes do envio
+  memcpy(peerInfo.peer_addr, Config::EspNow::broadcastAddress, 6);
+  peerInfo.channel = Config::EspNow::CHANNEL;
+  peerInfo.encrypt = false;
+
+  // Adiciona peer se ainda não existir
+  if (esp_now_is_peer_exist(Config::EspNow::broadcastAddress) != true) {
+    if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+      Serial.println("Falha ao adicionar peer");
+      return;
+    }
   }
 
-void sendFlightCommand(CommandType type) {
+  // Prepara o comando
   LaunchCommand cmd;
   cmd.type = type;
   cmd.timestamp = millis();
   cmd.sequenceId = nextSequenceId++;
   cmd.checksum = cmd.calculateChecksum();
 
-  esp_err_t result = esp_now_send(Config::EspNow::broadcastAddress, reinterpret_cast<uint8_t*>(&cmd), sizeof(cmd));
-
-  if (result == ESP_OK) {
-    Serial.printf("Comando %s enviado com sucesso! [Seq: %u]\n", 
-      type == CommandType::START_FLIGHT ? "INICIAR" : "ENCERRAR", cmd.sequenceId);
-  } else {
+  // Envia o comando
+  esp_err_t result = esp_now_send(Config::EspNow::broadcastAddress, 
+                                  reinterpret_cast<uint8_t*>(&cmd), 
+                                  sizeof(cmd));
+  
+  if (result != ESP_OK) {
     Serial.printf("Falha ao enviar comando %s! Código de erro: %d\n", 
       type == CommandType::START_FLIGHT ? "INICIAR" : "ENCERRAR", result);
   }
@@ -226,20 +316,27 @@ void sendFlightCommand(CommandType type) {
       ESP.restart();
       return;
     }
-        // Configuração do callback de recebimento
     esp_now_register_recv_cb(onEspNowReceive);
+    esp_now_register_send_cb(onEspNowSent);
 
     // Rotas do servidor web
     server.on("/", handleRoot);
     server.on("/json", handleJSON);
+    server.on("/json/gps", handleGpsJSON);
+    server.on("/json/tensao", handleTensaoJSON);
+    server.on("/json/altimetro", handleAltimetroJSON);
+    server.on("/json/acelerometro", handleAcelerometroJSON);
+
     server.onNotFound([]() {
         server.send(404, "text/plain", "404 Not Found");
     });
     server.on("/launch", []() {
         sendFlightCommand(CommandType::START_FLIGHT);
+        server.send(200, "text/plain", "Comando de lançamento enviado!");
     });
     server.on("/arrival", []() {
         sendFlightCommand(CommandType::END_FLIGHT);
+        server.send(200, "text/plain", "Comando de chegada enviado!");
     });
 
     // Inicia servidor web
@@ -248,6 +345,7 @@ void sendFlightCommand(CommandType type) {
 
     // Log do canal configurado
     uint8_t currentChannel;
+    esp_wifi_set_channel(Config::EspNow::CHANNEL, WIFI_SECOND_CHAN_NONE);
     esp_wifi_get_channel(&currentChannel, 0);
     Serial.printf("Canal ESP-NOW configurado: %d\n", currentChannel);
 }
@@ -259,9 +357,13 @@ void sendFlightCommand(CommandType type) {
   */
  void loop() {
      // Lida com requisições do servidor web
-     server.handleClient();
- 
+    server.handleClient();
+    int leituraADC = analogRead(Config::Hardware::ADC_PIN);
+    float tensaoPino = (leituraADC / 4095.0) * VREF;
+    float tensaoReal = tensaoPino * Config::Hardware::ADC_MULTIPLIER;
+    sensorData.tensao.voltage_base = tensaoReal;
+
      // Pequeno delay para evitar travamentos
-     delay(10);
+     delay(100);
  }
  

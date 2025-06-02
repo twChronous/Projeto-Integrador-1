@@ -73,6 +73,8 @@
          /// @details Velocidade de comunicação para depuração e monitoramento
          constexpr uint32_t BAUD_RATE = 115200U;
 
+         constexpr uint32_t ADC_PIN = 13;     // Pino ADC para leitura de tensão
+         constexpr float ADC_MULTIPLIER = 2.0;  // Porque estamos usando 10k e 10k
      }
  
      /**
@@ -100,8 +102,7 @@
      namespace EspNow {
          /// @brief Canal de comunicação ESP-NOW
          /// @details Canal específico para transmissão de dados ESP-NOW
-         constexpr uint8_t CHANNEL = 1U;
-         constexpr uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+         constexpr uint8_t CHANNEL = 1;
+         constexpr uint8_t broadcastAddress[] = {0x10, 0x06, 0x1C, 0x69, 0xC1, 0x44};
      }
  }
- 
