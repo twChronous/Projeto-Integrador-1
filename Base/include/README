@@ -1,0 +1,48 @@
+# Include (Arquivos de Cabeçalho)
+
+## 📁 Descrição do Diretório
+
+Este diretório contém os arquivos de cabeçalho (`.h`) do projeto, que são responsáveis por definir estruturas de dados, constantes, declarações de funções e configurações globais.
+
+## 🔍 Conteúdo dos Arquivos
+
+### 1. `SensorStructs.h`
+- Define estruturas de dados para sensores
+- Inclui:
+  - `AcelerometerData`: Dados de acelerômetro e giroscópio
+  - `AltimeterData`: Informações de altitude e pressão
+  - `SensorData`: Estrutura consolidada de dados de sensores
+
+### 2. `Config.h`
+- Gerencia configurações centralizadas do projeto
+- Namespaces:
+  - `Network`: Configurações de rede
+  - `Hardware`: Definições de hardware
+  - `Timing`: Intervalos de tempo
+  - `EspNow`: Configurações de comunicação ESP-NOW
+
+## 🛠 Boas Práticas
+
+- Utilização de `#pragma once` como include guard
+- Comentários Doxygen para documentação
+- Uso de `constexpr` para otimização de compilação
+- Namespaces para organização lógica
+
+## 📝 Notas
+
+- Todos os arquivos são projetados para serem independentes e reutilizáveis
+- Documentação detalhada para facilitar manutenção
+- Configurações centralizadas para fácil modificação
+
+## 🔗 Dependências
+
+- Requer compilador C++11 ou superior
+- Compatível com plataformas ESP32/ESP8266
+
+## 🚀 Como Usar
+
+Inclua os arquivos de cabeçalho necessários em seus arquivos de implementação:
+
+```cpp
+#include "SensorStructs.h"
+#include "Config.h"
