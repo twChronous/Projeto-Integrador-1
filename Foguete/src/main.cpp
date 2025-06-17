@@ -541,8 +541,7 @@ void transmitData() {
  * @param incomingData Dados recebidos
  * @param len Tamanho dos dados
  */
-void onEspNowReceive(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len) {
-  // Verifica se o tamanho dos dados corresponde a um comando
+void onEspNowReceive(const uint8_t *mac, const uint8_t *incomingData, int len) {
   if (len == sizeof(ControlCommand)) {
       ControlCommand command;
       memcpy(&command, incomingData, sizeof(ControlCommand));
@@ -566,6 +565,7 @@ void onEspNowReceive(const esp_now_recv_info_t *info, const uint8_t *incomingDat
       }
   }
 }
+
 
 /**
  * @brief Configuração do sistema de telemetria

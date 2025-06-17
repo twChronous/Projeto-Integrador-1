@@ -120,38 +120,37 @@ struct LaunchCommand {
  /**
   * @brief Callback para recebimento de dados via ESP-NOW
   * 
-  * @param info Informações sobre o remetente
+  * @param mac Informações sobre o remetente
   * @param incomingData Ponteiro para os dados recebidos
   * @param len Tamanho dos dados recebidos
   * 
   * Processa os dados recebidos, verifica integridade e atualiza 
   * variáveis globais com informações dos sensores.
   */
- void onEspNowReceive(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len) {
-    // Verifica o tamanho dos dados
+void onEspNowReceive(const uint8_t *mac, const uint8_t *incomingData, int len) {
     if (len != sizeof(SensorData)) {
-      Serial.printf("Tamanho de dados inválido. Esperado: %d, Recebido: %d\n", 
-                    sizeof(SensorData), len);
-      return;
+        Serial.printf("Tamanho de dados inválido. Esperado: %d, Recebido: %d\n", 
+                      sizeof(SensorData), len);
+        return;
     }
-    
+
     // Formata endereço MAC do remetente
     char macStr[18];
     snprintf(macStr, sizeof(macStr), "%02X:%02X:%02X:%02X:%02X:%02X",
-             info->src_addr[0], info->src_addr[1], info->src_addr[2],
-             info->src_addr[3], info->src_addr[4], info->src_addr[5]);
-    
+             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
     // Copia os dados recebidos
     memcpy(&dadosRecebidos, incomingData, sizeof(SensorData));
-    
+
     // Marca dados como atualizados
     dadosAtualizados = true;
-    
+
     // Log de recebimento
     Serial.println("Dados recebidos:");
     Serial.printf("MAC: %s\n", macStr);
     Serial.println("-----------");
-    }
+}
+
     
  
  /**

@@ -40,7 +40,7 @@
          constexpr uint32_t MISO_PIN = 19;     // Pino MISO
          constexpr uint32_t SCK_PIN = 18;      // Pino SCK   
          
-         constexpr uint32_t ADC_PIN = 13;     // Pino ADC para leitura de tensão
+         constexpr uint32_t ADC_PIN = 33;     // Pino ADC para leitura de tensão
          constexpr float ADC_MULTIPLIER = 2.0;  // Porque estamos usando 10k e 10k
      }
  

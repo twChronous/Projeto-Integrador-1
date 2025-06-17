@@ -9,7 +9,7 @@
  */
 
  #pragma once  // Diretiva moderna para include guard
-
+ #include <IPAddress.h>
  #include <cstdint>       // Para tipos integrais de largura específica
  
  /**
@@ -46,11 +46,11 @@
          
          /// @brief Endereço IP do Access Point
          /// @details Endereço IP fixo para o ponto de acesso
-         constexpr const char* AP_IP = "192.168.4.1";
+        const IPAddress AP_IP(192, 168, 4, 1);
          
          /// @brief Máscara de sub-rede
          /// @details Configura o range de endereços da rede local
-         constexpr const char* SUBNET_MASK = "255.255.255.0";
+        const IPAddress SUBNET_MASK(255, 255, 255, 0);
          
          /// @brief Endereço MAC para comunicação broadcast
          /// @details Endereço utilizado para transmissão para todos os dispositivos
@@ -73,7 +73,7 @@
          /// @details Velocidade de comunicação para depuração e monitoramento
          constexpr uint32_t BAUD_RATE = 115200U;
 
-         constexpr uint32_t ADC_PIN = 13;     // Pino ADC para leitura de tensão
+         constexpr uint32_t ADC_PIN = 33;     // Pino ADC para leitura de tensão
          constexpr float ADC_MULTIPLIER = 2.0;  // Porque estamos usando 10k e 10k
      }
  
