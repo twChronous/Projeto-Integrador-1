@@ -6,12 +6,11 @@
  * para um foguete d'água, utilizando ESP32, MPU6050 e BMP280.
  * 
  * @author Lucas Mateus
- * @date Maio/2025
- * @version 1.1
+ * @date Julho/2025
+ * @version 1.2
  * 
  * @note Projeto Integrador 1 - Engenharia
  */
- #include "SD.h"
  #include "SPI.h"
  #include <Adafruit_MPU6050.h>
  #include <Adafruit_Sensor.h>
@@ -35,20 +34,6 @@
  const float COMPLEMENTARY_FILTER_ALPHA = 0.98;
 
 
- // Constantes de estado de voo
-enum FlightState {
-  GROUND_STATE,
-  PRE_FLIGHT,
-  FLIGHT_ACTIVE,
-  POST_FLIGHT
-};
-
-// Variáveis globais de estado
-FlightState currentFlightState = GROUND_STATE;
-String currentLogFilename = "";
-bool sdReady = false;
-bool isFlightLogging = false;
-unsigned long flightStartTime;
 const float VREF = 3.3;  // Tensão de referência do ADC (ESP32 usa 3.3V)
 
 /** 
@@ -187,92 +172,6 @@ String generateLogFilename() {
   return String(buffer);
 }
 
-/**
- * @brief Inicia um novo log de voo
- * @details Cria arquivo CSV com cabeçalho e configura estado de voo
- */
-void startNewFlightLog() {
-  if (!sdReady) {
-      Serial.println("Cartão SD não está pronto!");
-      return;
-  }
-
-  // Gera nome único para arquivo de log
-  currentLogFilename = generateLogFilename();
-
-  // Abre arquivo para escrita
-  File file = SD.open(currentLogFilename.c_str(), FILE_WRITE);
-  if (file) {
-      // Cabeçalho detalhado do CSV
-      file.println("Timestamp,AccX,AccY,AccZ,GyroX,GyroY,GyroZ,Temp,Pitch,Roll,Pressao(hPa),Altitude(m)");
-      file.close();
-      
-      // Configura estado de voo
-      currentFlightState = FLIGHT_ACTIVE;
-      isFlightLogging = true;
-      flightStartTime = millis();
-
-      Serial.println("Novo log de voo iniciado: " + currentLogFilename);
-  } else {
-      Serial.println("Erro ao criar arquivo de log de voo.");
-  }
-}
-
-/**
- * @brief Finaliza o log de voo atual
- * @details Fecha o arquivo de log e reseta estado de voo
- */
-void endFlightLog() {
-  if (!isFlightLogging) return;
-
-  // Fecha estado de voo
-  currentFlightState = POST_FLIGHT;
-  isFlightLogging = false;
-
-  unsigned long flightDuration = (millis() - flightStartTime) / 1000; // em segundos
-  
-  // Adiciona marcador de fim de voo
-  File file = SD.open(currentLogFilename.c_str(), FILE_WRITE);
-  if (file) {
-      file.println("# FIM DO VOO");
-      file.printf("# Duração do Voo: %lu segundos\n", flightDuration);
-      file.close();
-  }
-
-  Serial.printf("Voo finalizado. Duração: %lu segundos\n", flightDuration);
-  currentLogFilename = ""; // Reseta nome do arquivo
-}
-
-/**
- * @brief Salva dados no log de voo
- * @details Grava dados atuais dos sensores no arquivo CSV
- */
-void logToSD() {
-  if (!isFlightLogging || currentLogFilename == "") return;
-
-  File file = SD.open(currentLogFilename.c_str(), FILE_WRITE);
-  if (!file) {
-      Serial.println("Erro ao abrir arquivo de log.");
-      return;
-  }
-
-  file.printf("%lu,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
-      sensorData.timestamp,
-      sensorData.acelerometro.accX,
-      sensorData.acelerometro.accY,
-      sensorData.acelerometro.accZ,
-      sensorData.acelerometro.gyroX,
-      sensorData.acelerometro.gyroY,
-      sensorData.acelerometro.gyroZ,
-      sensorData.acelerometro.temp,
-      sensorData.acelerometro.pitch,
-      sensorData.acelerometro.roll,
-      sensorData.altimetro.pressure,
-      sensorData.altimetro.altitude
-  );
-
-  file.close();
-}
 
  /**
   * @brief Configura a comunicação ESP-NOW
@@ -535,37 +434,6 @@ void transmitData() {
 }
  
 
-/**
- * @brief Callback para recepção de comandos de controle
- * @param mac Endereço MAC do remetente
- * @param incomingData Dados recebidos
- * @param len Tamanho dos dados
- */
-void onEspNowReceive(const uint8_t *mac, const uint8_t *incomingData, int len) {
-  if (len == sizeof(ControlCommand)) {
-      ControlCommand command;
-      memcpy(&command, incomingData, sizeof(ControlCommand));
-
-      switch(command.type) {
-          case START_FLIGHT:
-              if (currentFlightState == GROUND_STATE) {
-                  startNewFlightLog();
-              }
-              break;
-          
-          case END_FLIGHT:
-              if (currentFlightState == FLIGHT_ACTIVE) {
-                  endFlightLog();
-              }
-              break;
-          
-          default:
-              Serial.println("Comando não reconhecido");
-              break;
-      }
-  }
-}
-
 
 /**
  * @brief Configuração do sistema de telemetria
@@ -573,16 +441,6 @@ void onEspNowReceive(const uint8_t *mac, const uint8_t *incomingData, int len) {
 void setup() {
   Serial.begin(Config::Hardware::BAUD_RATE);
   while (!Serial) delay(10);
-
-
-//   // Inicialização do SD Card
-//   if (!SD.begin(Config::Hardware::SD_CS_PIN)) {
-//       Serial.println("Falha na inicialização do SD Card");
-//       sdReady = false;
-//   } else {
-//       sdReady = true;
-//       Serial.println("Cartão SD inicializado com sucesso");
-//   }
 
   // Inicialização do barramento I2C
   Wire.begin();
@@ -599,9 +457,6 @@ void setup() {
       ESP.restart();
   }
 
-  // Registra callback de recepção de dados
-  esp_now_register_recv_cb(onEspNowReceive);
-
   setupEspNow();
   // Inicialização dos sensores
   setupSensors();
@@ -615,12 +470,7 @@ void setup() {
 void loop() {
   updateSensorData();
   transmitData();
-  
-  if (isFlightLogging) {
-      logToSD();
-      debugPrintData();
-  }
-
+  debugPrintData();
   delay(100);  // Pequeno atraso para estabilidade
 }
  

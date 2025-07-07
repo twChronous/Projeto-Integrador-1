@@ -1,26 +1,41 @@
 /**
  * @file main.cpp
  * @brief Receptor ESP-NOW com servidor web para monitoramento de sensores
- * @version 1.1
- * @date May/2025
+ * @version 1.3
+ * @date Julho/2025
  * @author Lucas Mateus
  */
 
- #include <Arduino.h>
- #include <WiFi.h>
- #include <esp_now.h>
+ #include <ESP32Servo.h>
  #include <WebServer.h>
- #include "Structs.h"
  #include <esp_wifi.h>
+ #include <Arduino.h>
+ #include <esp_now.h>
+ #include <WiFi.h>
+
  #include "Config.h"
- 
+ #include "Structs.h"
+
  /// @brief Dados globais recebidos via ESP-NOW
  SensorData dadosRecebidos = {0};
 
-
 esp_now_peer_info_t peerInfo = {};
 
-const float VREF = 3.3;  // Tensão de referência do ADC (ESP32 usa 3.3V)
+struct {             // Structure declaration
+  int leituraADC;
+  float tensaoPino;
+  float tensaoReal;
+} tensaoBase;  
+
+/// @brief Biblioteca para controle de PWM no ESP32
+/// @details Utilizada para controle de motores e outros dispositivos
+/// @note A biblioteca ESP32Servo é uma alternativa ao uso direto de PWM
+Servo meuServo;
+
+ /// @brief Tensão de referência do ADC
+ /// @details Utilizada para conversão de valores analógicos
+const float VREF = 5; // Tensão de referência do ADC (5V para o sensor de tensão)
+
  /// @brief Servidor web na porta 80
  WebServer server(80);
  
@@ -32,20 +47,6 @@ uint16_t nextSequenceId = 0;
  /** @brief Estrutura global para armazenamento de dados de telemetria */
  SensorData sensorData = {};
 
-struct LaunchCommand {
-  CommandType type;
-  uint32_t timestamp;
-  uint16_t sequenceId;
-  uint8_t checksum;
-
-  uint8_t calculateChecksum() const {
-    // Simples checksum: soma de bytes
-    uint8_t sum = static_cast<uint8_t>(type) + 
-                  (timestamp & 0xFF) + ((timestamp >> 8) & 0xFF) + ((timestamp >> 16) & 0xFF) + ((timestamp >> 24) & 0xFF) +
-                  (sequenceId & 0xFF) + ((sequenceId >> 8) & 0xFF);
-    return sum;
-  }
-};
  /**
   * @brief Configura o canal e região do WiFi para ESP-NOW
   * 
@@ -67,11 +68,7 @@ struct LaunchCommand {
      wifi_second_chan_t secondChan = WIFI_SECOND_CHAN_NONE;
      esp_wifi_set_channel(Config::EspNow::CHANNEL, secondChan);
  }
- void onEspNowSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  if (status != ESP_NOW_SEND_SUCCESS) {
-    Serial.println("Falha no envio do comando ESP-NOW");
-  }
-}
+
  /**
   * @brief Gera página HTML com dados dos sensores
   * 
@@ -107,7 +104,7 @@ struct LaunchCommand {
        "<tr><td>Pitch</td><td>" + String(dadosRecebidos.acelerometro.pitch, 2) + "</td></tr>"
        "<tr><td>Altitude</td><td>" + String(dadosRecebidos.altimetro.altitude, 2) + "</td></tr>"
        "<tr><td>Pressure</td><td>" + String(dadosRecebidos.altimetro.pressure, 2) + "</td></tr>"
-       "<tr><td>Voltage (Base)</td><td>" + String(dadosRecebidos.tensao.voltage_base, 2) + "</td></tr>"
+       "<tr><td>Voltage (Base)</td><td>" + String(tensaoBase.tensaoReal, 2) + "</td></tr>"
        "<tr><td>Voltage (Rocket)</td><td>" + String(dadosRecebidos.tensao.voltage_rocket, 2) + "</td></tr>"
        "<tr><td>Latitude</td><td>" + String(dadosRecebidos.gps.latitude, 6) + "</td></tr>"
        "<tr><td>Longitude</td><td>" + String(dadosRecebidos.gps.longitude, 6) + "</td></tr>"
@@ -151,8 +148,7 @@ void onEspNowReceive(const uint8_t *mac, const uint8_t *incomingData, int len) {
     Serial.println("-----------");
 }
 
-    
- 
+
  /**
   * @brief Rota principal do servidor web
   * 
@@ -189,7 +185,7 @@ String getAcelerometroPayloadJson() {
 
 // Retorna uma string JSON para os dados de tensão. Ex: {"voltage_base":VAL,"voltage_rocket":VAL}
 String getTensaoPayloadJson() {
-    return "{\"voltage_base\":" + String(sensorData.tensao.voltage_base, 2) +
+    return "{\"voltage_base\":" + String(tensaoBase.tensaoReal, 2) +
            ",\"voltage_rocket\":" + String(dadosRecebidos.tensao.voltage_rocket, 2) + "}";
 }
 
@@ -251,37 +247,7 @@ void handleGpsJSON() {
     String jsonResponse = "{\"gps\":" + getGpsPayloadJson() + "}";
     server.send(200, "application/json", jsonResponse);
 }
-void sendFlightCommand(CommandType type) {
-  // Configuração de peer antes do envio
-  memcpy(peerInfo.peer_addr, Config::EspNow::broadcastAddress, 6);
-  peerInfo.channel = Config::EspNow::CHANNEL;
-  peerInfo.encrypt = false;
 
-  // Adiciona peer se ainda não existir
-  if (esp_now_is_peer_exist(Config::EspNow::broadcastAddress) != true) {
-    if (esp_now_add_peer(&peerInfo) != ESP_OK) {
-      Serial.println("Falha ao adicionar peer");
-      return;
-    }
-  }
-
-  // Prepara o comando
-  LaunchCommand cmd;
-  cmd.type = type;
-  cmd.timestamp = millis();
-  cmd.sequenceId = nextSequenceId++;
-  cmd.checksum = cmd.calculateChecksum();
-
-  // Envia o comando
-  esp_err_t result = esp_now_send(Config::EspNow::broadcastAddress, 
-                                  reinterpret_cast<uint8_t*>(&cmd), 
-                                  sizeof(cmd));
-  
-  if (result != ESP_OK) {
-    Serial.printf("Falha ao enviar comando %s! Código de erro: %d\n", 
-      type == CommandType::START_FLIGHT ? "INICIAR" : "ENCERRAR", result);
-  }
-}
  /**
   * @brief Função de configuração inicial do sistema
   * 
@@ -292,12 +258,12 @@ void sendFlightCommand(CommandType type) {
     // Inicialização serial
     Serial.begin(115200);
     while(!Serial) { delay(10); }
-    
+    meuServo.setPeriodHertz(50); // frequência típica de servos (50 Hz)
+    meuServo.attach(Config::Hardware::SERVO_PIN, 500, 2400); // Pino do servo motor
     // Configuração do modo WiFi
     WiFi.mode(WIFI_AP_STA);  // Modo misto para ESP-NOW e AP
     WiFi.softAPConfig(Config::Network::AP_IP, Config::Network::AP_IP, Config::Network::SUBNET_MASK);
     WiFi.softAP(Config::Network::SSID, Config::Network::PASSWORD);
-    
     // Log de configuração de rede
     Serial.println("Configurando Access Point");
     Serial.print("IP do servidor: ");
@@ -316,7 +282,6 @@ void sendFlightCommand(CommandType type) {
       return;
     }
     esp_now_register_recv_cb(onEspNowReceive);
-    esp_now_register_send_cb(onEspNowSent);
 
     // Rotas do servidor web
     server.on("/", handleRoot);
@@ -330,18 +295,21 @@ void sendFlightCommand(CommandType type) {
         server.send(404, "text/plain", "404 Not Found");
     });
     server.on("/launch", []() {
-        sendFlightCommand(CommandType::START_FLIGHT);
-        server.send(200, "text/plain", "Comando de lançamento enviado!");
+        meuServo.write(180); // Define o PWM para 180 graus
+        server.send(200, "text/plain", "Lançamento realizado!");
+        delay(1000); // Aguarda 1 segundo para estabilizar o PWM
+        meuServo.write(0); // Reseta o PWM para 0 após o lançamento
     });
     server.on("/arrival", []() {
-        sendFlightCommand(CommandType::END_FLIGHT);
         server.send(200, "text/plain", "Comando de chegada enviado!");
     });
 
     // Inicia servidor web
     server.begin();
     Serial.println("Servidor Web iniciado!");
-
+    meuServo.write(90); // centraliza no setup
+    delay(1000);
+    meuServo.write(0);
     // Log do canal configurado
     uint8_t currentChannel;
     esp_wifi_set_channel(Config::EspNow::CHANNEL, WIFI_SECOND_CHAN_NONE);
@@ -355,14 +323,16 @@ void sendFlightCommand(CommandType type) {
   * funcionamento contínuo do sistema.
   */
  void loop() {
-     // Lida com requisições do servidor web
+    // Lida com requisições do servidor web
     server.handleClient();
     int leituraADC = analogRead(Config::Hardware::ADC_PIN);
     float tensaoPino = (leituraADC / 4095.0) * VREF;
     float tensaoReal = tensaoPino * Config::Hardware::ADC_MULTIPLIER;
-    sensorData.tensao.voltage_base = tensaoReal;
+    tensaoBase.tensaoReal = tensaoReal;
+    tensaoBase.leituraADC = leituraADC;
+    tensaoBase.tensaoPino = tensaoPino;
 
-     // Pequeno delay para evitar travamentos
-     delay(100);
+    // Pequeno delay para evitar travamentos
+    delay(100);
  }
  
