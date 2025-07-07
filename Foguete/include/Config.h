@@ -37,7 +37,7 @@ namespace Config
     constexpr uint32_t GPS_RX = 16;
     constexpr uint32_t GPS_TX = 17;
 
-    constexpr uint32_t ADC_PIN = 33;      // Pino ADC para leitura de tensão
+    constexpr uint32_t ADC_PIN = 32;      // Pino ADC para leitura de tensão
     constexpr float ADC_MULTIPLIER = 2.0; // Porque estamos usando 10k e 10k
   }
 

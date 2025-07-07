@@ -11,7 +11,6 @@
  * 
  * @note Projeto Integrador 1 - Engenharia
  */
- #include "SPI.h"
  #include <Adafruit_MPU6050.h>
  #include <Adafruit_Sensor.h>
  #include <Wire.h>
@@ -19,7 +18,8 @@
  #include <WiFi.h>
  #include <esp_wifi.h>
  #include <Adafruit_BMP280.h>
- 
+ #include <TinyGPS++.h>
+
  #include <Config.h>
  #include <Structs.h>
  
@@ -72,9 +72,12 @@ float pitch = 0.0, roll = 0.0;
  /** @brief Objeto para comunicação com o sensor BMP280 */
  Adafruit_BMP280 bmp;
  
+ /** @brief Objeto para comunicação com o GPS NEO06MV2 */
+ TinyGPSPlus gps;
+
  /** @brief Estrutura global para armazenamento de dados de telemetria */
  SensorData sensorData = {};
- 
+
  /** 
  * @brief Declarações de Funções do Sistema de Telemetria
  * @details Protótipos de funções para inicialização, 
@@ -313,30 +316,17 @@ bool initBMP280() {
 
     sensorData.timestamp = currentTime;
 
-    // sensorData.gps = {
-    //     gps.location.lat(),
-    //     gps.location.lng(),
-    //     gps.altitude.meters(),
-    //     gps.date.year(),
-    //     gps.date.month(),
-    //     gps.date.day(),
-    //     gps.time.hour(),
-    //     gps.time.minute(),
-    //     gps.time.second()
-    // };
-
     sensorData.gps = {
-        000100.0, // Substitua por gps.location.lat() se GPS estiver implementado
-        001100.0, // Substitua por gps.location.lng() se GPS estiver implementado
-        0.11,      // Substitua por gps.altitude.meters() se GPS estiver implementado
-        2025,        // Substitua por gps.date.year() se GPS estiver implementado
-        6,        // Substitua por gps.date.month() se GPS estiver implementado
-        2,        // Substitua por gps.date.day() se GPS estiver implementado
-        20,        // Substitua por gps.time.hour() se GPS estiver implementado
-        30,        // Substitua por gps.time.minute() se GPS estiver implementado
-        49         // Substitua por gps.time.second() se GPS estiver implementado
+        gps.location.lat(),
+        gps.location.lng(),
+        gps.altitude.meters(),
+        gps.date.year(),
+        gps.date.month(),
+        gps.date.day(),
+        gps.time.hour(),
+        gps.time.minute(),
+        gps.time.second()
     };
-
 }
 
  /**

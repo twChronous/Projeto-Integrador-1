@@ -110,15 +110,15 @@
  struct GPSData {
      /// @brief Latitude em graus decimais
      /// @details Representa a posição geográfica no eixo norte-sul
-     float latitude;
+     double latitude;
 
      /// @brief Longitude em graus decimais
      /// @details Representa a posição geográfica no eixo leste-oeste
-     float longitude;
+     double longitude;
 
      /// @brief Altitude calculada em metros
      /// @details Altitude derivada da medição de posicionamento GPS
-     float altitude;
+     double altitude;
 
      /// @brief Dia do mês segundo o GPS
      /// @details Representa o dia do mês da leitura GPS horario de Greenwich 
